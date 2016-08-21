@@ -13,12 +13,16 @@ To get started with the app, simply download a build from releases, unzip and ru
 ```
 W, A, S, D:             Movement
 Mouse Movement:         Camera
+Left Shift:             Run
+Right Mouse Button:     Zoom
 ```
 ### Gamepad
 
 ```
 Left Analog Stick:      Movement
 Right Analog Stick:     Camera
+Left Trigger:           Run
+Right Trigger:          Zoom
 ```
 
 ## More
