@@ -27,6 +27,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
+        [SerializeField] private bool m_CanJump = true;
+        [SerializeField] private bool m_IsZooming;
+        [SerializeField] private float m_ZoomFoV = 45f;
+        [SerializeField] private float m_RegularFoV = 90f;
+        public bool m_CanControl = true;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -63,7 +68,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             RotateView();
             // the jump state needs to read here to make sure it is not missed
-            if (!m_Jump)
+            if (!m_Jump && m_CanJump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
@@ -212,7 +217,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
-            m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
+            m_IsWalking = !Input.GetButton("Run") && Input.GetAxis("Run") < 0.5f;
+
+            // Modify the camera's field of view to zoom in and out
+            m_IsZooming = Input.GetButton("Zoom") || Input.GetAxis("Zoom") > 0.5f;
+            m_Camera.fieldOfView = Mathf.MoveTowards(m_Camera.fieldOfView, m_IsZooming ? m_ZoomFoV : m_RegularFoV, Time.deltaTime * 100);
 #endif
             // set the desired speed to be walking or running
             speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;

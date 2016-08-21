@@ -24,14 +24,21 @@ public class Player : MonoBehaviour
         Ray ray = new Ray(m_Camera.transform.position, m_Camera.transform.forward);
         RaycastHit hit;
 
+        // Uses a SphereCast to check if any artwork is in view, and if so, displays the 
+        // UI showing the artwork's title. If not, this UI is hidden.
         if (Physics.SphereCast(ray, 1.5f, out hit, 4, m_LayerMask, QueryTriggerInteraction.UseGlobal))
         {
-            string title = hit.collider.gameObject.GetComponent<Artwork>().title;
-            Debug.Log("Artwork " + title + " is in view");
+            string title = hit.collider.gameObject.name;            
+
             if (!m_ArtworkPanelAnim.GetBool("Show"))
             {
                 m_ArtworkTitleText.text = title;
                 m_ArtworkPanelAnim.SetBool("Show", true);
+            }
+
+            if (m_ArtworkTitleText.text != title)
+            {
+                m_ArtworkPanelAnim.SetBool("Show", false);
             }
         }
         else
